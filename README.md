@@ -9,10 +9,12 @@ The Heston model assumes the following SDEs for the dynamics of the underlying a
 $$ \begin{cases}
 dS_t =\mu S_t\space dt + \sqrt{v_t}S_T\space dW_t^{S} \\
 
+
 dv_t = \kappa(\theta - v_t)dt + \epsilon \sqrt{v_t} dW_t^{v} \\
 
+
 \langle dW_t^{(S)} dW_t^{(v)} \rangle = \rho dt
-\end{cases}$$
+\end{cases} $$
 
 with : 
 
@@ -26,9 +28,9 @@ $v_t : \text{Instantaneous variance}\\$
 A basic approach of simulating a Heston process over discrete time intervals is the log-Euler scheme. 
 
 $$ 
-\log(S_{t+\Delta}) = \log(S_t) +(r - \frac{1}{2} v_t) \Delta + \sqrt{v_t\Delta} Z_x\\
+\log(S_{t+\Delta}) = \log(S_t) +(r - \frac{1}{2} v_t) \Delta + \sqrt{v_t\Delta} Z_x $$
 
-v_{t+\Delta} = v_t + \kappa(\theta-v_t)\Delta + \epsilon \sqrt{v_t\Delta} Z_v
+$$v_{t+\Delta} = v_t + \kappa(\theta-v_t)\Delta + \epsilon \sqrt{v_t\Delta} Z_v
 $$
 
 $$
