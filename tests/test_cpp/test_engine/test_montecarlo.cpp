@@ -30,3 +30,37 @@ TEST_CASE("Monte Carlo - BlackScholes & Euler - basic usage"){
     REQUIRE(simulation.end_state().spot() != 100);
 
 }
+
+TEST_CASE("Monte Carlo - BlackScholes & Euler - Randomness"){
+
+    BlackScholes bs{0.02, 0.1};
+    EulerBlackScholes eu_scheme(bs);
+    MonteCarlo mc1(eu_scheme);
+    MonteCarlo mc2(eu_scheme);
+    MonteCarlo mc3(eu_scheme);
+
+    mc1.set_seed(1);
+    mc2.set_seed(1);
+    mc3.set_seed(2);
+
+    Path simulation1= mc1.simulate(100, 252, 1);
+    Path simulation2= mc2.simulate(100, 252, 1);
+    Path simulation3= mc3.simulate(100, 252, 1);
+
+    REQUIRE(simulation1.size() == 252);
+    REQUIRE(simulation1.end_state().spot() != 100);
+    REQUIRE(simulation2.size() == 252);
+    REQUIRE(simulation2.end_state().spot() != 100);
+    REQUIRE(simulation3.size() == 252);
+    REQUIRE(simulation3.end_state().spot() != 100);
+
+    REQUIRE(mc1.get_seed() == 1);
+    REQUIRE(mc2.get_seed() == 1);
+    REQUIRE(mc3.get_seed() == 2);
+    
+    REQUIRE(simulation1.end_state().spot() == simulation2.end_state().spot());
+    REQUIRE(simulation1.end_state().spot() != simulation3.end_state().spot());
+
+
+}
+

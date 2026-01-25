@@ -1,6 +1,8 @@
 
 # Quadratic Exponential (Andersen)
-This project aims at implementing the QE scheme from Leif Andersen. The full paper this work is based on can be found [here](https://www.ressources-actuarielles.net/EXT/ISFA/1226.nsf/0/1826b88b152e65a7c12574b000347c74/$FILE/LeifAndersenHeston.pdf).
+This ongoing project aims at implementing the QE scheme from Leif Andersen in a light Monte Carlo engine. The full paper this work is based on can be found [here](https://www.ressources-actuarielles.net/EXT/ISFA/1226.nsf/0/1826b88b152e65a7c12574b000347c74/$FILE/LeifAndersenHeston.pdf).
+
+Still WIP - the main objective will be to build a light Monte Carlo engine in C++ and compare QE for Heston with other discretization methods, and other models. 
 
 ## Background
 ### The Heston Model
@@ -69,9 +71,9 @@ In ***Efficient Simulation of the Heston Stochastic Volatility Mode*** (2006), L
 
 **• The non-central chi-squared distribution**
 
-Andersen starts from the fact that the process followed by volatility in the Heston model is derived from the CIR interest rate model. This model follows a **non-central chi-squared distribution**, noted $\chi^{'2}(\upsilon, \lambda)$ with $\upsilon$ the degree of freedom and $\lambda$ the non-centrality parameter. For a process $X$ that follows :
+Andersen starts from the fact that the process followed by volatility in the Heston model is a CIR process. This model follows a **non-central chi-squared distribution**, noted $\chi^{'2}(\upsilon, \lambda)$ with $\upsilon$ the degree of freedom and $\lambda$ the non-centrality parameter. For a process $X$ that follows :
 
-$$dX_t = \kappa(\theta - X_t)dt + \sigma \sqrt{X_t} dW_t$$
+$$dX_t = \kappa(\theta - X_t)dt + \epsilon \sqrt{X_t} dW_t$$
 
 the R.V $X_t \space | \space X_s$ for $t>s$ therefore follows :
 
@@ -81,7 +83,7 @@ with
 
 $$ \upsilon = \frac{4\kappa\theta}{\epsilon^2} $$
 
-$$ \lambda = \frac{4\kappa e^{-\kappa(t-s)}}{\epsilon^2(1-e^{-\kappa(t-s)})}$$
+$$ \lambda \propto v_s \frac{4\kappa e^{-\kappa(t-s)}}{\epsilon^2(1-e^{-\kappa(t-s)})}$$
 
 and has moments :
 
@@ -95,10 +97,11 @@ Andersen offers to approximate $X_t | X_s \sim \chi^{'2}$ through two different 
 
 $$ \psi = \frac{Var(X_t | X_s)}{E(X_t | X_s)^{2}}$$
 
-which measures the relative dispersion of the future variance and serves as the **regime selection criteria**. When $\psi \leq 1.5$, $X_t$ can be approximated by the **quadratic regime** :
+which measures the relative dispersion of the future variance and serves as the **regime selection criteria**. Noting $ m \equiv E(X_t | X_s)$, when $\psi \leq 1.5$, $X_t$ can be approximated by the **quadratic regime** :
 
 $$X_t =a(Z + b)^2$$
-$$-$$
+
+---
 
 $$Z\sim \mathcal{N}(0,1)$$
 
@@ -106,13 +109,15 @@ $$a = \frac{m}{1+b^2}$$
 
 $$b^2 = \frac{2}{\psi} - 1 + \sqrt{\frac{2}{\psi}\left(\frac{2}{\psi}-1\right)}$$
 
+---
+
 When $\psi > 1.5$, $X_t$ is approximated by the **exponential regime** : 
 
 $$ if \space U \leq p \space :\space X_t = 0$$
 
 $$if \space U > p \space :\space X_t = -\frac{1}{\beta}\ln(\frac{1-U}{1-p})$$
 
-$$-$$
+---
 
 $$ U \sim \mathcal{U}(0,1)$$
 $$ p = \frac{\psi -1}{\psi +1}$$

@@ -37,15 +37,12 @@ public:
      * @return Path object
      */
     Path simulate(float S0, int n, float T, std::optional<float> v0 = std::nullopt);
-    void set_seed(int seed){seed_ = seed;};
+    void set_seed(int s){seed_ = s;};
+    int get_seed() {return seed_;}
 
     private:
     const Scheme& scheme_; 
 
     size_t seed_;
-
-
-
-
 
 };
