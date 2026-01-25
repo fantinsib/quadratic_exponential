@@ -26,6 +26,7 @@ class MonteCarlo : Engine
     Path simulate(float S0, int n, float T, std::optional<float> v0);
 
     private:
+    Scheme scheme; 
 
 
 
