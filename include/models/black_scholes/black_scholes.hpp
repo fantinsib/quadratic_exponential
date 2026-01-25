@@ -7,8 +7,12 @@
 
 /**
  * @brief Base class for the Black Scholes model
+ *
+ * This struct stores the main param of the BS model. Parameters 
+ * include 'mu' (float) : the drift of the asset and 'sigma' (float) :
+ * its volatility which must be greater or equal to zero. 
+ *
  */
-
 struct BlackScholes : Model {
     BlackScholes(float mu, float sigma) : 
         mu(mu),

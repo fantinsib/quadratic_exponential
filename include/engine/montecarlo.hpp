@@ -15,18 +15,34 @@
 
 /**
  * @brief Construct a new Monte Carlo engine
+ *
+ * @param scheme : a scheme instanciated with a model to simulate 
  * 
  */
 class MonteCarlo : Engine 
 {
 
-    public:
-    MonteCarlo(Scheme);
+public:
+    MonteCarlo(Scheme& scheme):
+    scheme_(scheme)
+    {};
 
-    Path simulate(float S0, int n, float T, std::optional<float> v0);
+    /**
+     * @brief Simulates the scheme over a specified time interval
+     * 
+     * @param S0 the initial price
+     * @param n the number of steps 
+     * @param T the time horizon
+     * @param v0 optional initial volatility 
+     * @return Path object
+     */
+    Path simulate(float S0, int n, float T, std::optional<float> v0 = std::nullopt);
+    void set_seed(int seed){seed_ = seed;};
 
     private:
-    Scheme scheme; 
+    const Scheme& scheme_; 
+
+    size_t seed_;
 
 
 

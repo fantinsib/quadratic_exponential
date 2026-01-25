@@ -6,6 +6,7 @@
 add_executable(quadratic_exponential_tests
 test_models
 test_schemes/tests_euler
+test_engine/test_montecarlo
 
 )
 

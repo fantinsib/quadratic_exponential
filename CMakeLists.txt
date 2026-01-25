@@ -37,6 +37,7 @@ enable_testing()
 add_executable(quadratic_exponential_tests
     tests/test_cpp/test_models.cpp
     tests/test_cpp/test_schemes/test_euler.cpp
+    tests/test_cpp/test_engine/test_montecarlo.cpp
 )
 
 target_link_libraries(quadratic_exponential_tests

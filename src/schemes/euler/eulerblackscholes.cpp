@@ -1,28 +1,31 @@
 #include "schemes/eulerblackscholes.hpp"
 #include "models/black_scholes/black_scholes.hpp"
 #include "schemes/schemes.hpp"
-#include "schemes/state.hpp"
+#include "types/state.hpp"
+
+
 #include <random>
-#include <random>
+#include <cmath>
 
 
 
 
-State EulerBlackScholes::init_state(float S0){
+
+State EulerBlackScholes::init_state(float S0,  std::optional<float> v0) const { 
 
     State state{S0};
     return state;
     
 }
 
-State EulerBlackScholes::step(State state, float dt, std::mt19937 rng) {
+State EulerBlackScholes::step(const State& state, float dt, std::mt19937& rng) const {
 
     std::normal_distribution<float> dist;
     
-    float S = state.spot();
+    float logS = std::log(state.spot());
     float Z = dist(rng);
-    float r = model.mu * dt + model.sigma*Z;
+    float logSt = logS + (model.mu - 0.5*model.sigma*model.sigma)*dt + model.sigma*Z;
 
-    return State{S * (1+r)};
+    return State{std::exp(logSt)};
 }
 

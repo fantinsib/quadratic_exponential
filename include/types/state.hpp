@@ -7,7 +7,7 @@ struct State {
     float S;
     std::optional<float> v = std::nullopt;
 
-    float spot() {return S;}
+    float spot() const {return S;}
     float vol() {
         if (v.has_value()) {
             return v.value();
