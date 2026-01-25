@@ -1,0 +1,24 @@
+####################################################
+#       TESTS CMAKE
+####################################################
+
+
+add_executable(quadratic_exponential_tests
+test_models
+test_schemes/tests_euler
+
+)
+
+target_link_libraries(quadratic_exponential_tests
+    PRIVATE Catch2::Catch2WithMain
+    PRIVATE quadratic_exponential
+)
+
+target_include_directories(quadratic_exponential_tests
+    PRIVATE ${PROJECT_SOURCE_DIR}/src
+)
+
+add_test(
+    NAME quadratic_exponential_tests
+    COMMAND quadratic_exponential_tests
+)
