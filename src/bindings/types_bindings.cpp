@@ -18,7 +18,9 @@ void bind_types(py::module_& m) {
         .def(py::init<>())
         .def("end_state", &Path::end_state, py::return_value_policy::reference_internal)
         .def("__len__", &Path::size)
-        .def("len", &Path::size);
+        .def("len", &Path::size)
+        .def("at", &Path::at,
+            py::arg("i"), py::return_value_policy::reference_internal);
 }
 
 } // namespace qe::pybind

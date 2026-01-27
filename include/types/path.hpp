@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdexcept>
 #include <vector>
 #include <optional>
 
@@ -21,11 +22,15 @@ public:
     iterator begin() {return states.begin();}
     iterator end() {return states.end();}
 
+    const State& at(size_t i) const {
+        if (i<0 || i > states.size()) throw std::invalid_argument("Path::at : index out of bounds");
+        return states[i];}
+
     const_iterator begin() const {return states.begin();}
     const_iterator end() const {return states.end();}
 
     State end_state() {return states.back();}
-    float size() {return states.size();}
+    size_t size() {return states.size();}
     void set_size(size_t size) {
         states.resize(size);
     };

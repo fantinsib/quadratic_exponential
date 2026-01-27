@@ -46,6 +46,12 @@ class Path:
         """
         self._p = cpp_Path
     
+    def __len__(self):
+        return self._p.__len__()
+
+    def __repr__(self):
+        return f"Path : n_steps = {len(self)}"
+    
     def end_state(self):
         """
         Returns the end state of the path. 
@@ -57,7 +63,16 @@ class Path:
         s = self._p.end_state()
         return State(s)
 
-        
+    def __getitem__(self, i):
+        if isinstance(i, slice):
+            rng = range(*i.indices(len(self)))
+            return [State(self._p.at(k)) for k in rng]
+
+    def spot(self):
+        return [(self._p.at(k)._spot()) for k in range(len(self))]
+    
+    def vol(self):
+        return [(self._p.at(k)._vol()) for k in range(len(self))]
 
 
 class Model(_Model):
@@ -113,21 +128,21 @@ class Scheme(_Scheme):
 
 class EulerBlackScholes(_EulerBlackScholes):
     
-    def __init__(self, Model):
+    def __init__(self, model):
         """
         Scheme 
         """
-        super().__init__()
+        super().__init__(model)
 
 
 class EulerHeston(_EulerHeston):
 
-    def __init__(self, Model):
-        super().__init__(Model)
+    def __init__(self, model):
+        super().__init__(model)
 
 class QE(_QE):
-    def __init__(self, Model):
-        super().__init__()
+    def __init__(self, model, psi_c = 1.5):
+        super().__init__(model, psi_c)
 
 class MonteCarlo(_MonteCarlo):
 

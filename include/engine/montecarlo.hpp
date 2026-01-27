@@ -11,6 +11,7 @@
 #include "schemes/schemes.hpp"
 #include <memory>
 #include <optional>
+#include <random>
 #include "types/path.hpp"
 
 
@@ -25,11 +26,19 @@ class MonteCarlo : Engine
 
 public:
     explicit MonteCarlo(std::shared_ptr<Scheme> scheme) : 
-        scheme_(std::move(scheme)) {}
+        scheme_(std::move(scheme)) {
+            std::random_device rd;
+            std::mt19937 rng(rd());
+            seed_ = rng();
+        }
     
     template <class SchemeT>
     explicit MonteCarlo(SchemeT scheme)
-    : scheme_(std::make_shared<SchemeT>(std::move(scheme))) {}
+    : scheme_(std::make_shared<SchemeT>(std::move(scheme))) {
+            std::random_device rd;
+            std::mt19937 rng(rd());
+            seed_ = rng();
+    }
 
 
 
