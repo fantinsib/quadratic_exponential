@@ -78,9 +78,18 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(pybind11)
 
 pybind11_add_module(_volmc
-    
-    #src/bindings/montecarlo_bindings.cpp
-    src/bindings/bindings.cpp
+  src/bindings/bindings.cpp
+  src/bindings/types_bindings.cpp
+  src/bindings/models_bindings.cpp
+  src/bindings/schemes_bindings.cpp
+  src/bindings/engines_bindings.cpp
+)
+
+
+install(TARGETS _volmc
+    LIBRARY DESTINATION volmc
+    ARCHIVE DESTINATION volmc
+    RUNTIME DESTINATION volmc
 )
 
 target_link_libraries(_volmc PRIVATE volmc)

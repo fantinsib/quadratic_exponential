@@ -1,3 +1,7 @@
+[build-system]
+requires = ["scikit-build-core>=0.7"]
+build-backend = "scikit_build_core.build"
+
 [project]
 name = "volmc"
 version = "0.1.0"

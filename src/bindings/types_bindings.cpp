@@ -6,15 +6,19 @@
 
 namespace py = pybind11; 
 
-void bind_models(py::module_& m) {
-    py::class_<State>(m, "State")
-        .def(py::init<>())
-        .def("spot", &State::spot)
-        def("vol", &State::vol);
+namespace qe::pybind {
 
-    py::class_<Path>(m, "Path")
+void bind_types(py::module_& m) {
+    py::class_<State>(m, "_State")
         .def(py::init<>())
-        .def("end_state", Path::end_state)
-        .def("__len__", Path::size)
-        def("len", Path::size);
+        .def("_spot", &State::spot)
+        .def("_vol", &State::vol);
+
+    py::class_<Path>(m, "_Path")
+        .def(py::init<>())
+        .def("end_state", &Path::end_state, py::return_value_policy::reference_internal)
+        .def("__len__", &Path::size)
+        .def("len", &Path::size);
 }
+
+} // namespace qe::pybind

@@ -9,6 +9,7 @@
 
 #include "engine.hpp"
 #include "schemes/schemes.hpp"
+#include <memory>
 #include <optional>
 #include "types/path.hpp"
 
@@ -23,9 +24,14 @@ class MonteCarlo : Engine
 {
 
 public:
-    MonteCarlo(Scheme& scheme):
-    scheme_(scheme)
-    {};
+    explicit MonteCarlo(std::shared_ptr<Scheme> scheme) : 
+        scheme_(std::move(scheme)) {}
+    
+    template <class SchemeT>
+    explicit MonteCarlo(SchemeT scheme)
+    : scheme_(std::make_shared<SchemeT>(std::move(scheme))) {}
+
+
 
     /**
      * @brief Simulates the scheme over a specified time interval
@@ -41,7 +47,7 @@ public:
     int get_seed() {return seed_;}
 
     private:
-    const Scheme& scheme_; 
+    const std::shared_ptr<Scheme> scheme_; 
 
     size_t seed_;
 
