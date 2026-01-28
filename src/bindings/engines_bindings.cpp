@@ -15,12 +15,18 @@ void bind_engine(py::module_& m) {
         .def(py::init<std::shared_ptr<Scheme> >(),
             py::arg("scheme"),
             py::keep_alive<1,2>())
-        .def("_simulate", &MonteCarlo::simulate,
+        .def("_simulate_path", &MonteCarlo::simulate_path,
             py::arg("S0"),
             py::arg("n"),
             py::arg("T"),
+            py::arg("v0") = py::none())
+        .def("_generate", &MonteCarlo::generate,
+            py::arg("S0"),
+            py::arg("n"),
+            py::arg("T"),
+            py::arg("n_paths"),
             py::arg("v0") = py::none()
-            );
+        );
 }
 
 } // namespace qe::pybind

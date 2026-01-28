@@ -27,7 +27,7 @@ TEST_CASE("Monte Carlo - BlackScholes & Euler - basic usage"){
 
     mc.set_seed(1);
 
-    Path simulation= mc.simulate(100, 252, 1);
+    Path simulation= mc.simulate_path(100, 252, 1);
 
     REQUIRE(simulation.size() == 252);
     REQUIRE(simulation.end_state().spot() != 100);
@@ -46,9 +46,9 @@ TEST_CASE("Monte Carlo - BlackScholes & Euler - Randomness"){
     mc2.set_seed(1);
     mc3.set_seed(2);
 
-    Path simulation1= mc1.simulate(100, 252, 1);
-    Path simulation2= mc2.simulate(100, 252, 1);
-    Path simulation3= mc3.simulate(100, 252, 1);
+    Path simulation1= mc1.simulate_path(100, 252, 1);
+    Path simulation2= mc2.simulate_path(100, 252, 1);
+    Path simulation3= mc3.simulate_path(100, 252, 1);
 
     REQUIRE(simulation1.size() == 252);
     REQUIRE(simulation1.end_state().spot() != 100);
@@ -76,7 +76,7 @@ TEST_CASE("Monte Carlo - Heston & Euler - basic usage"){
 
     mc.set_seed(1);
 
-    Path simulation= mc.simulate(100, 252, 1, 0.2);
+    Path simulation= mc.simulate_path(100, 252, 1, 0.2);
 
     REQUIRE(simulation.size() == 252);
     REQUIRE(simulation.end_state().spot() != 100);
@@ -96,9 +96,9 @@ TEST_CASE("Monte Carlo - Heston & Euler - Randomness"){
     mc2.set_seed(1);
     mc3.set_seed(2);
 
-    Path simulation1= mc1.simulate(100, 252, 1, 0.2);
-    Path simulation2= mc2.simulate(100, 252, 1, 0.2);
-    Path simulation3= mc3.simulate(100, 252, 1, 0.2);
+    Path simulation1= mc1.simulate_path(100, 252, 1, 0.2);
+    Path simulation2= mc2.simulate_path(100, 252, 1, 0.2);
+    Path simulation3= mc3.simulate_path(100, 252, 1, 0.2);
 
     REQUIRE(simulation1.size() == 252);
     REQUIRE(simulation1.end_state().spot() != 100);
@@ -126,7 +126,7 @@ TEST_CASE("Monte Carlo - QE - basic usage"){
 
     mc.set_seed(1);
 
-    Path simulation= mc.simulate(100, 252, 1, 0.2);
+    Path simulation= mc.simulate_path(100, 252, 1, 0.2);
 
     REQUIRE(simulation.size() == 252);
     REQUIRE(simulation.end_state().spot() != 100);
@@ -146,9 +146,9 @@ TEST_CASE("Monte Carlo - QE - Randomness"){
     mc2.set_seed(1);
     mc3.set_seed(2);
 
-    Path simulation1= mc1.simulate(100, 252, 1, 0.2);
-    Path simulation2= mc2.simulate(100, 252, 1, 0.2);
-    Path simulation3= mc3.simulate(100, 252, 1, 0.2);
+    Path simulation1= mc1.simulate_path(100, 252, 1, 0.2);
+    Path simulation2= mc2.simulate_path(100, 252, 1, 0.2);
+    Path simulation3= mc3.simulate_path(100, 252, 1, 0.2);
 
     REQUIRE(simulation1.size() == 252);
     REQUIRE(simulation1.end_state().spot() != 100);
@@ -175,7 +175,7 @@ TEST_CASE("Monte Carlo - QE - V > 0"){
 
     mc.set_seed(1);
 
-    Path simulation= mc.simulate(100, 1000, 1, 0.2);
+    Path simulation= mc.simulate_path(100, 1000, 1, 0.2);
 
     REQUIRE(simulation.size() == 1000);
     

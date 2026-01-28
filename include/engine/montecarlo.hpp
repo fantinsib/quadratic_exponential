@@ -13,6 +13,7 @@
 #include <optional>
 #include <random>
 #include "types/path.hpp"
+#include "types/simulationresult.hpp"
 
 
 /**
@@ -25,19 +26,22 @@ class MonteCarlo : Engine
 {
 
 public:
+    //Constructor with a ptr towards a scheme 
     explicit MonteCarlo(std::shared_ptr<Scheme> scheme) : 
         scheme_(std::move(scheme)) {
             std::random_device rd;
             std::mt19937 rng(rd());
             seed_ = rng();
+            rng_.seed(seed_);
         }
-    
+    //Constructor overload for passing the scheme by value
     template <class SchemeT>
     explicit MonteCarlo(SchemeT scheme)
     : scheme_(std::make_shared<SchemeT>(std::move(scheme))) {
             std::random_device rd;
             std::mt19937 rng(rd());
             seed_ = rng();
+            rng_.seed(seed_);
     }
 
 
@@ -51,13 +55,37 @@ public:
      * @param v0 optional initial volatility 
      * @return Path object
      */
-    Path simulate(float S0, int n, float T, std::optional<float> v0 = std::nullopt);
-    void set_seed(int s){seed_ = s;};
+    Path simulate_path(float S0, size_t n, float T, std::optional<float> v0 = std::nullopt);
+
+    /**
+     * @brief Simulates n_paths paths that follow the scheme.  
+     * 
+     * @param S0 the initial spot
+     * @param n the number of steps
+     * @param T the time horizon
+     * @param n_path the number of paths to simulate
+     * @param v0 the initial volatility 
+     * @return SimulationResult 
+     */
+    SimulationResult generate(float S0, size_t n, float T, size_t n_path, std::optional<float> v0 = std::nullopt);
+    
+    /**
+     * @brief Changes the seed of the MonteCarlo engine
+     * 
+     * @param s the new seed 
+     */
+    void set_seed(int s){
+        seed_ = s;
+        rng_.seed(s);}
+    
+    //returns the current seed
     int get_seed() {return seed_;}
 
     private:
     const std::shared_ptr<Scheme> scheme_; 
 
     size_t seed_;
+    std::mt19937 rng_;
 
+    
 };

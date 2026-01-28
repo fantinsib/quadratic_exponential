@@ -5,6 +5,8 @@ from ._volmc import _EulerHeston, _EulerBlackScholes, _QE, _Scheme
 from ._volmc import _MonteCarlo
 
 
+#--------------------------------types
+
 class State:
     def __init__(self, cpp_State):
         """
@@ -73,7 +75,21 @@ class Path:
     
     def vol(self):
         return [(self._p.at(k)._vol()) for k in range(len(self))]
+    
+class SimulationResult:
+    def __init__(self, cpp_simres):
+        self.res = cpp_simres
 
+    def __repr__(self):
+        return f"SimulationResult of {len(self.res.spot)} paths and {len(self.res.spot[0])} steps"
+    
+    def spot_values(self):
+        return self.res.spot
+    
+    def var_values(self):
+        return self.res.var
+
+#--------------------------------MODELS
 
 class Model(_Model):
     pass
@@ -122,6 +138,8 @@ class Heston(_Heston):
     def feller_condition(self):
         return self._feller_condition()
     
+#--------------------------------SCHEMES
+
 class Scheme(_Scheme):
     pass
 
@@ -144,12 +162,34 @@ class QE(_QE):
     def __init__(self, model, psi_c = 1.5):
         super().__init__(model, psi_c)
 
+
+#--------------------------------Engine
+
 class MonteCarlo(_MonteCarlo):
 
     def __init__(self, scheme):
         super().__init__(scheme)
 
-    def simulate(self, S0: float, n: int, T: float, v0: float | None):
-        cpp_path = super()._simulate(S0, n, T, v0)
+    def simulate_path(self, S0: float, n: int, T: float, v0: float | None = None):
+        cpp_path = super()._simulate_path(S0, n, T, v0)
         return Path(cpp_path)
 
+    def generate(self, S0: float, n: int, T: float, n_paths: int, v0: float | None = None):
+        """
+        Returns a MonteCarlo simulation
+
+        Parameters
+        ----------
+        S0 : float
+            Initial spot 
+        n : int
+            Number of steps of each path
+        T : float
+            Time interval
+        n_paths : int
+            Number of paths to simulate
+        v0 : float
+            Initial volatility 
+        """
+        sim_res = super()._generate(S0, n, T, n_paths, v0)
+        return SimulationResult(sim_res)
