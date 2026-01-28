@@ -20,6 +20,7 @@ TEST_CASE("Models - Black Scholes - constructor"){
 
     SECTION("Valid arguments"){
             BlackScholes bs = BlackScholes{0.02, 0.2};
+            BlackScholes bs_zero = BlackScholes{0.02, 0.0};
     }
 
     SECTION("Invalid arguments"){
@@ -37,10 +38,12 @@ TEST_CASE("Models - Heston - constructor"){
 
     SECTION("Invalid arguments"){
 
+        REQUIRE_THROWS_AS((Heston{0.02, 0, 0.05, 0.1, 0.7}), std::invalid_argument);
         REQUIRE_THROWS_AS((Heston{0.02, 2, -0.05, 0.1, 0.7}), std::invalid_argument);
         REQUIRE_THROWS_AS((Heston{0.02, 2, 0.05, -0.1, 0.7}), std::invalid_argument);
         REQUIRE_THROWS_AS((Heston{0.02, 2, 0.05, 0.1, 1.1}), std::invalid_argument);
         REQUIRE_THROWS_AS((Heston{0.02, -1, 0.05, 0.1, 0.7}), std::invalid_argument);
+        REQUIRE_THROWS_AS((Heston{0.02, 2, 0.05, 0.1, -1.1}), std::invalid_argument);
     }
 
     SECTION("Feller Condition"){
@@ -52,5 +55,9 @@ TEST_CASE("Models - Heston - constructor"){
 
     }
 
-}
+    SECTION("Rho boundaries"){
+        REQUIRE_NOTHROW((Heston{0.02, 2, 0.05, 0.1, -1.0}));
+        REQUIRE_NOTHROW((Heston{0.02, 2, 0.05, 0.1, 1.0}));
+    }
 
+}
