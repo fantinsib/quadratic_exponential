@@ -49,3 +49,110 @@ def test_monte_carlo_euler_bs_randomness():
             if step == 0: continue
             assert(s1[path][step] == s2[path][step])
             assert(s1[path][step] != s3[path][step])
+
+
+def test_monte_carlo_euler_heston_with_v0():
+
+    heston = Heston(0.02, 1.5, 0.04, 0.3, -0.7)
+    euler = EulerHeston(heston)
+    montecarlo = MonteCarlo(euler)
+
+    montecarlo.configure(seed=7)
+    sim = montecarlo.generate(100, 12, 1, 5, 0.04)
+
+    assert(isinstance(sim, SimulationResult))
+    assert(len(sim.spot_values()) == 5)
+    assert(len(sim.spot_values()[0]) == 13)
+    assert(len(sim.var_values()) == 5)
+    assert(len(sim.var_values()[0]) == 13)
+
+    for path in sim.spot_values():
+        assert path[0] == 100
+
+    assert(sim.var_values()[0][0] == pytest.approx(0.04))
+
+
+def test_monte_carlo_qe_heston_with_v0():
+
+    heston = Heston(0.02, 2.0, 0.04, 0.25, 0.3)
+    qe = QE(heston, psi_c=1.5)
+    montecarlo = MonteCarlo(qe)
+
+    montecarlo.configure(seed=3)
+    sim = montecarlo.generate(100, 8, 1, 4, 0.04)
+
+    assert(isinstance(sim, SimulationResult))
+    assert(len(sim.spot_values()) == 4)
+    assert(len(sim.spot_values()[0]) == 9)
+    assert(len(sim.var_values()) == 4)
+    assert(len(sim.var_values()[0]) == 9)
+
+
+def test_monte_carlo_heston_requires_v0():
+
+    heston = Heston(0.02, 1.5, 0.04, 0.3, -0.7)
+
+    with pytest.raises(ValueError):
+        MonteCarlo(EulerHeston(heston)).generate(100, 12, 1, 3)
+
+    with pytest.raises(ValueError):
+        MonteCarlo(QE(heston)).simulate_path(100, 12, 1)
+
+
+def test_monte_carlo_zero_time_raises():
+
+    bs = BlackScholes(0.02, 0.15)
+    montecarlo = MonteCarlo(EulerBlackScholes(bs))
+
+    with pytest.raises(ValueError):
+        montecarlo.generate(100, 12, 0, 3)
+
+
+def test_model_parameter_validation():
+
+    with pytest.raises(ValueError):
+        BlackScholes(0.02, -0.1)
+
+    with pytest.raises(ValueError):
+        Heston(0.02, 0.0, 0.04, 0.3, 0.0)
+
+    with pytest.raises(ValueError):
+        Heston(0.02, 1.0, 0.0, 0.3, 0.0)
+
+    with pytest.raises(ValueError):
+        Heston(0.02, 1.0, 0.04, 0.0, 0.0)
+
+    with pytest.raises(ValueError):
+        Heston(0.02, 1.0, 0.04, 0.3, 1.5)
+
+
+def test_qe_psi_threshold_bounds():
+
+    heston = Heston(0.02, 1.5, 0.04, 0.3, -0.7)
+
+    with pytest.raises(ValueError):
+        QE(heston, psi_c=0.9)
+
+    with pytest.raises(ValueError):
+        QE(heston, psi_c=2.1)
+
+    QE(heston, psi_c=1.0)
+    QE(heston, psi_c=2.0)
+
+
+def test_monte_carlo_negative_seed_raises():
+
+    bs = BlackScholes(0.02, 0.15)
+    montecarlo = MonteCarlo(EulerBlackScholes(bs))
+
+    with pytest.raises(ValueError):
+        montecarlo.configure(seed=-1)
+
+
+def test_heston_feller_condition():
+
+    heston_ok = Heston(0.02, 2.0, 0.04, 0.3, 0.0)
+    heston_bad = Heston(0.02, 0.5, 0.01, 1.0, 0.0)
+
+    assert(heston_ok.feller_condition() == True)
+    assert(heston_bad.feller_condition() == False)
