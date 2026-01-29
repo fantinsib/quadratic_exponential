@@ -65,7 +65,7 @@ m_price = sim.mean_terminal_spot()
 
 ![Spot Process](doc/img/spot_process_qe.png)
 
-![Var Process](doc/img/var_process_qe.png)
+![Var Process](doc/img/var_process_QE.png)
 
 ## Basic Pricing Example
 
