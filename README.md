@@ -58,6 +58,7 @@ sim = mc.generate(S0 = 100, v0 = 0.15, n = 252, T = 1, n_paths = 100_000)
 
 S = sim.spot_values()
 V = sim.var_values()
+m_price = sim.mean_terminal_spot()
 ```
 
 **Output**
@@ -65,6 +66,18 @@ V = sim.var_values()
 ![Spot Process](doc/img/spot_process_qe.png)
 
 ![Var Process](doc/img/var_process_qe.png)
+
+## Basic Pricing Example
+
+```python
+final_spots = S[:,-1]
+payoffs = np.maximum((final_spots - K), 0)
+call_price = np.exp(-r*T) * payoffs.mean()
+```
+
+The following graph shows the convergence of the price estimation depending on the number of paths generated. Red line indicates the exact Black Scholes price for this call. 
+
+![Convergence](doc/img/convergence.png)
 
 ## Notes and additional documentation 
 

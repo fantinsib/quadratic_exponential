@@ -82,6 +82,8 @@ class SimulationResult:
         Result of a MonteCarlo simulation
         """
         self.res = cpp_simres
+        self.n_path = len(self.res.spot)
+        self.n_steps = len(self.res.spot[0])
 
     def __repr__(self):
         return f"SimulationResult of {len(self.res.spot)} paths and {len(self.res.spot[0])} steps"
@@ -97,6 +99,12 @@ class SimulationResult:
         Returns a numpy matrix of the variance processes (one row = one process)
         """
         return self.res.var
+    
+    def mean_terminal_spot(self):
+        """
+        Returns the mean final value of the spot processes
+        """
+        return (self.res.spot[:,-1]).sum()/self.n_path
 
 #--------------------------------MODELS
 
