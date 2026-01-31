@@ -84,7 +84,6 @@ public:
 
     size_t seed_;
     std::mt19937 rng_;
-    bool v_simulated_;
     int n_jobs_ = 1;
 
     

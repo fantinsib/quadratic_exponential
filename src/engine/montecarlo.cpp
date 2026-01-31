@@ -75,7 +75,7 @@ void MonteCarlo::configure(std::optional<int> seed, std::optional<int> n_jobs){
     }
 
     if (n_jobs.has_value()) {
-        unsigned int hw = std::thread::hardware_concurrency();
+        int hw = std::thread::hardware_concurrency();
         hw = (hw == 0 ? 1 : hw); 
         if (n_jobs.value() < -1 || n_jobs.value() == 0) throw std::invalid_argument("MonteCarlo::configure : n_jobs value must be strictly positive or equal to -1");
         if (n_jobs.value() > hw) n_jobs_ = hw;

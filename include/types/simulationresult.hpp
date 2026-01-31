@@ -6,7 +6,7 @@
 #include "schemes/schemes.hpp"
 #include <stdexcept>
 #include <vector>
-
+#include <memory>
 
 struct PathBundle {
 
