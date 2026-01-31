@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(quadratic_exponential LANGUAGES CXX)
+project(volmc LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -14,6 +14,7 @@ add_library(volmc
     src/schemes/euler/eulerblackscholes.cpp
     src/schemes/euler/eulerheston.cpp
     src/engine/montecarlo.cpp
+    src/types/date.cpp
 )
 
 target_include_directories(volmc
@@ -48,6 +49,7 @@ add_executable(volmc_tests
     tests/test_cpp/test_schemes/test_euler.cpp
     tests/test_cpp/test_schemes/test_qe.cpp
     tests/test_cpp/test_engine/test_montecarlo.cpp
+    tests/test_cpp/test_types/test_date.cpp
 )
 
 target_link_libraries(volmc_tests
