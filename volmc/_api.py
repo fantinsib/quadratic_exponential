@@ -230,13 +230,13 @@ class MonteCarlo(_MonteCarlo):
         -------
         SimulationResult
         """
-        if (v0):
+        if (v0 is not None):
             sim_res = super()._generate(S0, n, T, n_paths, v0)
         else:
             sim_res = super()._generate(S0, n, T, n_paths)
         return SimulationResult(sim_res)
     
-    def configure(self, seed: int):
+    def configure(self, seed: int | None = None, n_jobs: int | None = None):
         """
         Add configurations to the MonteCarlo engine.
 
@@ -245,4 +245,4 @@ class MonteCarlo(_MonteCarlo):
         seed : int
             The seed to be used for randomness
         """
-        self._configure(seed)
+        self._configure(seed, n_jobs)

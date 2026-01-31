@@ -15,6 +15,7 @@ add_library(volmc
     src/schemes/euler/eulerheston.cpp
     src/engine/montecarlo.cpp
     src/types/date.cpp
+    src/types/simulationresult.cpp
 )
 
 target_include_directories(volmc
@@ -50,6 +51,7 @@ add_executable(volmc_tests
     tests/test_cpp/test_schemes/test_qe.cpp
     tests/test_cpp/test_engine/test_montecarlo.cpp
     tests/test_cpp/test_types/test_date.cpp
+    tests/test_cpp/test_types/test_simulationresult.cpp
 )
 
 target_link_libraries(volmc_tests
@@ -95,3 +97,25 @@ install(TARGETS _volmc
 )
 
 target_link_libraries(_volmc PRIVATE volmc)
+
+
+# --------------
+# OpenMP
+# --------------
+
+find_package(OpenMP)
+
+if(NOT OpenMP_CXX_FOUND AND APPLE)
+  message(STATUS "OpenMP not found by CMake, trying manual flags for AppleClang + libomp...")
+
+  set(OpenMP_CXX_FLAGS "-Xpreprocessor -fopenmp")  
+  set(OpenMP_CXX_LIB_NAMES "omp")
+  set(OpenMP_omp_LIBRARY "/opt/homebrew/opt/libomp/lib/libomp.dylib")
+
+  include_directories("/opt/homebrew/opt/libomp/include")
+endif()
+
+find_package(OpenMP REQUIRED)
+
+
+target_link_libraries(volmc PRIVATE OpenMP::OpenMP_CXX)

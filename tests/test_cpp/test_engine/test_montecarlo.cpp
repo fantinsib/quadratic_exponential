@@ -10,6 +10,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/catch_approx.hpp>  
+#include <random>
 #include "models/black_scholes/black_scholes.hpp"
 #include "models/heston/heston.hpp"
 #include "schemes/eulerblackscholes.hpp"
@@ -28,7 +29,9 @@ TEST_CASE("Monte Carlo - BlackScholes & Euler - basic usage"){
 
     mc.configure(1);
 
-    Path simulation = mc.simulate_path(100, 252, 1);
+    std::mt19937 rng;
+
+    Path simulation = mc.simulate_path(100, 252, 1, rng);
     SimulationResult results = mc.generate(100, 252, 1, 10);
     
 
@@ -60,27 +63,27 @@ TEST_CASE("Monte Carlo - BlackScholes & Euler - Randomness"){
     MonteCarlo mc2(eu_scheme);
     MonteCarlo mc3(eu_scheme);
 
+    std::mt19937 rng;
     mc1.configure(1);
+    SimulationResult simulation1= mc1.generate(100, 252, 1, 1);
     mc2.configure(1);
+    SimulationResult simulation2= mc2.generate(100, 252, 1, 1);
     mc3.configure(2);
+    SimulationResult simulation3= mc3.generate(100, 252, 1, 1);
 
-    Path simulation1= mc1.simulate_path(100, 252, 1);
-    Path simulation2= mc2.simulate_path(100, 252, 1);
-    Path simulation3= mc3.simulate_path(100, 252, 1);
-
-    REQUIRE(simulation1.size() == 253);
-    REQUIRE(simulation1.end_state().spot() != 100);
-    REQUIRE(simulation2.size() == 253);
-    REQUIRE(simulation2.end_state().spot() != 100);
-    REQUIRE(simulation3.size() == 253);
-    REQUIRE(simulation3.end_state().spot() != 100);
+    REQUIRE(simulation1.get_nsteps() == 252);
+    REQUIRE(simulation1.avg_terminal_value() != 100);
+    REQUIRE(simulation2.get_nsteps() == 252);
+    REQUIRE(simulation2.avg_terminal_value() != 100);
+    REQUIRE(simulation3.get_nsteps() == 252);
+    REQUIRE(simulation3.avg_terminal_value() != 100);
 
     REQUIRE(mc1.get_seed() == 1);
     REQUIRE(mc2.get_seed() == 1);
     REQUIRE(mc3.get_seed() == 2);
     
-    REQUIRE(simulation1.end_state().spot() == simulation2.end_state().spot());
-    REQUIRE(simulation1.end_state().spot() != simulation3.end_state().spot());
+    REQUIRE(simulation1.avg_terminal_value() == simulation2.avg_terminal_value());
+    REQUIRE(simulation1.avg_terminal_value() != simulation3.avg_terminal_value());
 
 
 }
@@ -93,8 +96,9 @@ TEST_CASE("Monte Carlo - Heston & Euler - basic usage"){
     MonteCarlo mc(eu_scheme);
 
     mc.configure(1);
+    std::mt19937 rng;
 
-    Path simulation= mc.simulate_path(100, 252, 1, 0.2);
+    Path simulation= mc.simulate_path(100, 252, 1, rng, 0.2);
 
     REQUIRE(simulation.size() == 253);
     REQUIRE(simulation.end_state().spot() != 100);
@@ -110,27 +114,29 @@ TEST_CASE("Monte Carlo - Heston & Euler - Randomness"){
     MonteCarlo mc2(eu_scheme);
     MonteCarlo mc3(eu_scheme);
 
+    std::mt19937 rng;
+
     mc1.configure(1);
     mc2.configure(1);
     mc3.configure(2);
 
-    Path simulation1= mc1.simulate_path(100, 252, 1, 0.2);
-    Path simulation2= mc2.simulate_path(100, 252, 1, 0.2);
-    Path simulation3= mc3.simulate_path(100, 252, 1, 0.2);
+    SimulationResult simulation1= mc1.generate(100, 252, 1, 1, 0.2);
+    SimulationResult simulation2= mc2.generate(100, 252, 1, 1, 0.2);
+    SimulationResult simulation3= mc3.generate(100, 252, 1, 1, 0.2);
 
-    REQUIRE(simulation1.size() == 253);
-    REQUIRE(simulation1.end_state().spot() != 100);
-    REQUIRE(simulation2.size() == 253);
-    REQUIRE(simulation2.end_state().spot() != 100);
-    REQUIRE(simulation3.size() == 253);
-    REQUIRE(simulation3.end_state().spot() != 100);
+    REQUIRE(simulation1.get_nsteps() == 252);
+    REQUIRE(simulation1.avg_terminal_value() != 100);
+    REQUIRE(simulation2.get_nsteps() == 252);
+    REQUIRE(simulation2.avg_terminal_value() != 100);
+    REQUIRE(simulation3.get_nsteps() == 252);
+    REQUIRE(simulation3.avg_terminal_value() != 100);
 
     REQUIRE(mc1.get_seed() == 1);
     REQUIRE(mc2.get_seed() == 1);
     REQUIRE(mc3.get_seed() == 2);
     
-    REQUIRE(simulation1.end_state().spot() == simulation2.end_state().spot());
-    REQUIRE(simulation1.end_state().spot() != simulation3.end_state().spot());
+    REQUIRE(simulation1.avg_terminal_value() == simulation2.avg_terminal_value());
+    REQUIRE(simulation1.avg_terminal_value() != simulation3.avg_terminal_value());
 
 
 }
@@ -143,8 +149,9 @@ TEST_CASE("Monte Carlo - QE - basic usage"){
     MonteCarlo mc(qe);
 
     mc.configure(1);
+    std::mt19937 rng;
 
-    Path simulation= mc.simulate_path(100, 252, 1, 0.2);
+    Path simulation= mc.simulate_path(100, 252, 1, rng, 0.2);
 
     REQUIRE(simulation.size() == 253);
     REQUIRE(simulation.end_state().spot() != 100);
@@ -164,23 +171,23 @@ TEST_CASE("Monte Carlo - QE - Randomness"){
     mc2.configure(1);
     mc3.configure(2);
 
-    Path simulation1= mc1.simulate_path(100, 252, 1, 0.2);
-    Path simulation2= mc2.simulate_path(100, 252, 1, 0.2);
-    Path simulation3= mc3.simulate_path(100, 252, 1, 0.2);
+    SimulationResult simulation1= mc1.generate(100, 252, 1, 1, 0.2);
+    SimulationResult simulation2= mc2.generate(100, 252, 1, 1, 0.2);
+    SimulationResult simulation3= mc3.generate(100, 252, 1, 1, 0.2);
 
-    REQUIRE(simulation1.size() == 253);
-    REQUIRE(simulation1.end_state().spot() != 100);
-    REQUIRE(simulation2.size() == 253);
-    REQUIRE(simulation2.end_state().spot() != 100);
-    REQUIRE(simulation3.size() == 253);
-    REQUIRE(simulation3.end_state().spot() != 100);
+    REQUIRE(simulation1.get_nsteps() == 252);
+    REQUIRE(simulation1.avg_terminal_value() != 100);
+    REQUIRE(simulation2.get_nsteps() == 252);
+    REQUIRE(simulation2.avg_terminal_value() != 100);
+    REQUIRE(simulation3.get_nsteps() == 252);
+    REQUIRE(simulation3.avg_terminal_value() != 100);
 
     REQUIRE(mc1.get_seed() == 1);
     REQUIRE(mc2.get_seed() == 1);
     REQUIRE(mc3.get_seed() == 2);
     
-    REQUIRE(simulation1.end_state().spot() == simulation2.end_state().spot());
-    REQUIRE(simulation1.end_state().spot() != simulation3.end_state().spot());
+    REQUIRE(simulation1.avg_terminal_value() == simulation2.avg_terminal_value());
+    REQUIRE(simulation1.avg_terminal_value() != simulation3.avg_terminal_value());
 
 
 }
@@ -192,8 +199,9 @@ TEST_CASE("Monte Carlo - QE - V > 0"){
     MonteCarlo mc(qe);
 
     mc.configure(1);
+    std::mt19937 rng;
 
-    Path simulation= mc.simulate_path(100, 1000, 1, 0.2);
+    Path simulation= mc.simulate_path(100, 1000, 1, rng, 0.2);
 
     REQUIRE(simulation.size() == 1001);
     
@@ -201,5 +209,25 @@ TEST_CASE("Monte Carlo - QE - V > 0"){
         REQUIRE(s.vol().has_value());
         REQUIRE(s.vol().value() > 0);
     }
+
+}
+
+
+TEST_CASE("Monte Carlo - Parallelism") {
+
+    Heston heston{0.02, 2, 0.05, 0.4, -0.5};
+    EulerHeston qe(heston);
+    
+    MonteCarlo mc(qe);
+
+    mc.configure(1, -1);
+    
+    SimulationResult res = mc.generate(100, 252,1, 20, 0.2);
+
+    REQUIRE(res.avg_terminal_value() != 100);
+    REQUIRE(res.get_npaths() == 20);
+    REQUIRE(res.get_nsteps() == 252);
+
+
 
 }

@@ -92,11 +92,9 @@ def test_monte_carlo_heston_requires_v0():
 
     heston = Heston(0.02, 1.5, 0.04, 0.3, -0.7)
 
-    with pytest.raises(ValueError):
-        MonteCarlo(EulerHeston(heston)).generate(100, 12, 1, 3)
 
     with pytest.raises(ValueError):
-        MonteCarlo(QE(heston)).simulate_path(100, 12, 1)
+        MonteCarlo(EulerHeston(heston)).generate(100, 12, 1, 3)
 
 
 def test_monte_carlo_zero_time_raises():
@@ -106,7 +104,7 @@ def test_monte_carlo_zero_time_raises():
 
     with pytest.raises(ValueError):
         montecarlo.generate(100, 12, 0, 3)
-
+        
 
 def test_model_parameter_validation():
 
@@ -156,3 +154,41 @@ def test_heston_feller_condition():
 
     assert(heston_ok.feller_condition() == True)
     assert(heston_bad.feller_condition() == False)
+
+
+def test_mc_with_mt():
+
+    heston = Heston(0.02, 2.0, 0.04, 0.3, -0.6)
+    mc = MonteCarlo(QE(heston))
+
+    mc.configure(1, -1)
+
+    simulation = mc.generate(100, 252, 1, 1000, 0.2)
+
+    assert(simulation.mean_terminal_spot() != 100)
+    assert(simulation.n_path == 1000)
+    assert(simulation.n_steps == 253)
+    assert(len(simulation.spot_values()) == simulation.n_path)
+
+def test_mc_with_mt_randomness():
+        
+    heston = Heston(0.02, 2.0, 0.04, 0.3, -0.6)
+    qe = QE(heston)
+
+    montecarlo1 = MonteCarlo(qe)
+    montecarlo2 = MonteCarlo(qe)
+    montecarlo3 = MonteCarlo(qe)
+
+    montecarlo1.configure(seed=1)
+    montecarlo2.configure(seed=1)
+    montecarlo3.configure(seed=2)
+
+    s1 = montecarlo1.generate(S0 = 100, v0 = 0.2, n= 252, T=1, n_paths= 10).spot_values()
+    s2 = montecarlo2.generate(S0 = 100, v0 = 0.2, n= 252, T=1, n_paths= 10).spot_values()
+    s3 = montecarlo3.generate(S0 = 100, v0 = 0.2, n= 252, T=1, n_paths= 10).spot_values()
+
+    for path in range(len(s1)):
+        for step in range(len(s1[0])):
+            if step == 0: continue
+            assert(s1[path][step] == s2[path][step])
+            assert(s1[path][step] != s3[path][step])

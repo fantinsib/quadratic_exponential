@@ -55,7 +55,7 @@ public:
      * @param v0 optional initial volatility 
      * @return Path object
      */
-    Path simulate_path(float S0, size_t n, float T, std::optional<float> v0 = std::nullopt);
+    Path simulate_path(float S0, size_t n, float T, std::mt19937& rng,std::optional<float> v0 = std::nullopt);
 
     /**
      * @brief Simulates n_paths paths that follow the scheme.  
@@ -74,7 +74,7 @@ public:
      * 
      * @param seed : the seed to be used for the generation
      */
-    void configure(std::optional<int> seed);
+    void configure(std::optional<int> seed = std::nullopt, std::optional<int> n_jobs = std::nullopt);
     
     //returns the current seed
     int get_seed() {return seed_;}
@@ -85,6 +85,7 @@ public:
     size_t seed_;
     std::mt19937 rng_;
     bool v_simulated_;
+    int n_jobs_ = 1;
 
     
 };

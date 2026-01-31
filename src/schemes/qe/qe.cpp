@@ -36,6 +36,8 @@ State QE::step(const State& state,
                         std::mt19937& rng) const 
 {
 
+    if (!state.vol().has_value()) throw std::invalid_argument("QE::step : state has no volatility");
+
     std::normal_distribution<float> N;
     std::uniform_real_distribution<float> U(0.0f, 1.0f);
 

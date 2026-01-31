@@ -52,9 +52,13 @@ heston = Heston(mu=0.02,
 print(f"Feller condition met : {heston.feller_condition()}")
 
 mc = MonteCarlo(QE(heston))
-mc.configure(seed=1)
+mc.configure(seed=1, n_jobs = -1)
 
-sim = mc.generate(S0 = 100, v0 = 0.15, n = 252, T = 1, n_paths = 100_000)
+sim = mc.generate(S0 = 100, 
+                  v0 = 0.15, 
+                  n = 252, 
+                  T = 1, 
+                  n_paths = 500_000)
 
 S = sim.spot_values()
 V = sim.var_values()

@@ -1,6 +1,7 @@
 #include <pybind11/attr.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
+#include <pybind11/stl_bind.h>
 #include <optional>
 #include "schemes/schemes.hpp"
 #include "engine/montecarlo.hpp"
@@ -15,11 +16,6 @@ void bind_engine(py::module_& m) {
         .def(py::init<std::shared_ptr<Scheme> >(),
             py::arg("scheme"),
             py::keep_alive<1,2>())
-        .def("_simulate_path", &MonteCarlo::simulate_path,
-            py::arg("S0"),
-            py::arg("n"),
-            py::arg("T"),
-            py::arg("v0") = py::none())
         .def("_generate", &MonteCarlo::generate,
             py::arg("S0"),
             py::arg("n"),
@@ -27,7 +23,8 @@ void bind_engine(py::module_& m) {
             py::arg("n_paths"),
             py::arg("v0") = py::none())
         .def("_configure", &MonteCarlo::configure,
-            py::arg("seed")
+            py::arg("seed"),
+            py::arg("n_jobs")
         );
 }
 

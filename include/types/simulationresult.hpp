@@ -57,6 +57,15 @@ struct SimulationResult {
 
     size_t get_npaths() {return n_paths;}
     size_t get_seed() {return origin_seed;}
+    size_t get_nsteps() {return n_steps;}
+
+    /**
+     * @brief Returns the average final value of
+     * the spots in all the paths
+     * 
+     * @return float 
+     */
+    float avg_terminal_value();
 
     std::shared_ptr<PathBundle> pathbundle;
 

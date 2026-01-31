@@ -84,7 +84,7 @@ TEST_CASE("Scheme - QE"){
         float dt = 0.1;
         State init{100};
 
-        REQUIRE_THROWS_AS(qe.step(init, dt, rng), std::bad_optional_access);
+        REQUIRE_THROWS_AS(qe.step(init, dt, rng), std::invalid_argument);
     }
 
 }
