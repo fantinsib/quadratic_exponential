@@ -17,6 +17,7 @@ add_library(volmc
     src/types/date.cpp
     src/types/simulationresult.cpp
     src/options/optioncontract.cpp
+    src/surface/local_vol.cpp
 )
 
 target_include_directories(volmc
@@ -54,6 +55,8 @@ add_executable(volmc_tests
     tests/test_cpp/test_types/test_date.cpp
     tests/test_cpp/test_types/test_simulationresult.cpp
     tests/test_cpp/test_options/test_europeanoptions.cpp
+    tests/test_cpp/test_surface/test_local_vol.cpp
+    
 )
 
 target_link_libraries(volmc_tests
