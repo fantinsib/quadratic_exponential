@@ -1,8 +1,11 @@
 import pytest
+import numpy as np
+
 from volmc import Path, State, SimulationResult
-from volmc import Heston, BlackScholes
-from volmc import EulerHeston, EulerBlackScholes, QE
+from volmc import Heston, BlackScholes, Dupire
+from volmc import EulerHeston, EulerBlackScholes, QE, EulerDupire
 from volmc import MonteCarlo
+from volmc import LocalVolatilitySurface
 
 
 
@@ -192,3 +195,38 @@ def test_mc_with_mt_randomness():
             if step == 0: continue
             assert(s1[path][step] == s2[path][step])
             assert(s1[path][step] != s3[path][step])
+
+def test_mc_dupire():
+
+    s = [80, 90, 100, 110, 120]
+    t = [0.2, 0.4, 0.8, 1.0]
+    v = [
+    [0.32, 0.26, 0.22, 0.25, 0.30],  # t = 0.2
+    [0.30, 0.25, 0.21, 0.24, 0.28],  # t = 0.4
+    [0.28, 0.24, 0.20, 0.23, 0.26],  # t = 0.8
+    [0.26, 0.23, 0.19, 0.22, 0.25],  # t = 1.0
+    ]
+
+    surface = LocalVolatilitySurface(t, s, v)
+
+    r = 0.04
+    q = 0.01
+
+    dupire = Dupire(r,q, surface)
+
+    euler_dupire = EulerDupire(dupire)
+
+    mc = MonteCarlo(euler_dupire)
+
+    sim = mc.generate(100, 252, 1, 10, 0.1)
+
+    assert(isinstance(sim, SimulationResult))
+    assert(sim.mean_terminal_spot() != 100)
+    assert(sim.n_path == 10)
+    assert(sim.n_steps == 253)
+    
+    S = sim.spot_values()
+    V = sim.var_values()
+
+    assert np.all(S > 0)
+    assert np.all(V > 0)

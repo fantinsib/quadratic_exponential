@@ -1,8 +1,8 @@
 from __future__ import annotations
 from ._volmc import _State
 from ._volmc import _Path
-from ._volmc import _Model, _BlackScholes, _Heston
-from ._volmc import _EulerHeston, _EulerBlackScholes, _QE, _Scheme
+from ._volmc import _Model, _BlackScholes, _Heston, _Dupire
+from ._volmc import _EulerHeston, _EulerBlackScholes, _QE, _Scheme, _EulerDupire
 from ._volmc import _MonteCarlo
 from ._volmc import _LocalVolatilitySurface
 
@@ -162,6 +162,22 @@ class Heston(_Heston):
     def feller_condition(self):
         return self._feller_condition()
     
+class Dupire(_Dupire):
+    def __init__(self, r : float, q : float, loc_vol_surface : LocalVolatilitySurface):
+        """
+        Creates a Dupire model.
+
+        Parameters
+        ----------
+        r : float
+            The risk-free rate.
+        q : float
+            The dividend yield
+        loc_vol_surface : LocalVolatilitySurface
+            The local volatility surface.
+        """
+        return super().__init__(r, q, loc_vol_surface)
+    
 #--------------------------------SCHEMES
 
 class Scheme(_Scheme):
@@ -185,6 +201,10 @@ class EulerHeston(_EulerHeston):
 class QE(_QE):
     def __init__(self, model, psi_c = 1.5):
         super().__init__(model, psi_c)
+
+class EulerDupire(_EulerDupire):
+    def __init__(self, model):
+        super().__init__(model)
 
 
 #--------------------------------Engine
@@ -271,6 +291,7 @@ class LocalVolatilitySurface(_LocalVolatilitySurface):
             The vector of spots of the surface
         volatility : the times * spots matrix of corresponding local volatilities
         """
+    
         return super().__init__(times, spots, volatility)
     
     def sigma(self, t : float, S : float):

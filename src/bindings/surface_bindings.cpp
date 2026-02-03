@@ -17,7 +17,7 @@ namespace qe::pybind {
 
 void bind_surface(py::module_& m) {
 
-    py::class_<LocalVolatilitySurface>(m, "_LocalVolatilitySurface")
+    py::class_<LocalVolatilitySurface, std::shared_ptr<LocalVolatilitySurface>>(m, "_LocalVolatilitySurface")
         .def(py::init([](py::array_t<double, py::array::c_style | py::array::forcecast> t,
                          py::array_t<double, py::array::c_style | py::array::forcecast> s,
                          py::array_t<double, py::array::c_style | py::array::forcecast> V) {
@@ -39,7 +39,7 @@ void bind_surface(py::module_& m) {
                             std::vector<double> spots(ptr_s, ptr_s + len_s);
                             std::vector<double> sigma(ptr_V, ptr_V+ rows*cols);
 
-                            return LocalVolatilitySurface{times, spots, sigma};
+                            return std::make_shared<LocalVolatilitySurface>(times, spots, sigma);
 
                          }))
         .def(

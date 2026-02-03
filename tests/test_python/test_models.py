@@ -1,5 +1,5 @@
 import pytest
-from volmc import BlackScholes, Heston
+from volmc import BlackScholes, Heston, LocalVolatilitySurface, Dupire
 
 
 def test_black_scholes_constructor_valid():
@@ -51,3 +51,25 @@ def test_heston_feller_condition_flags():
 
     assert(h_ok.feller_condition() == True)
     assert(h_bad.feller_condition() == False)
+
+def make_inputs():
+    s = [80, 90, 100, 110, 120]
+    t = [0.2, 0.4, 0.8, 1.0]
+    v = [
+    [0.32, 0.26, 0.22, 0.25, 0.30],  # t = 0.2
+    [0.30, 0.25, 0.21, 0.24, 0.28],  # t = 0.4
+    [0.28, 0.24, 0.20, 0.23, 0.26],  # t = 0.8
+    [0.26, 0.23, 0.19, 0.22, 0.25],  # t = 1.0
+    ]
+    return t, s, v
+
+
+def test_dupire_constructor():
+    t,s, v = make_inputs()
+
+    surface = LocalVolatilitySurface(t,s,v)
+
+    r = 0.03
+    q = 0.01
+
+    dupire = Dupire(r,q,surface)

@@ -1,7 +1,9 @@
 #include <memory>
 #include <pybind11/pybind11.h>
 #include "models/black_scholes/black_scholes.hpp"
+#include "models/dupire/dupire.hpp"
 #include "models/heston/heston.hpp"
+#include "schemes/eulerdupire.hpp"
 #include "schemes/eulerheston.hpp"
 #include "schemes/eulerblackscholes.hpp"
 #include "schemes/qe.hpp"
@@ -26,6 +28,10 @@ void bind_schemes(py::module_& m) {
         .def(py::init<Heston, float>(),
         py::arg("model"),
         py::arg("psi_c"));
+
+    py::class_<EulerDupire, Scheme, std::shared_ptr<EulerDupire>>(m, "_EulerDupire")
+        .def(py::init<Dupire>(),
+        py::arg("model"));
 
 }
 

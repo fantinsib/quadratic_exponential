@@ -1,3 +1,5 @@
+#include <cstring>
+#include <memory>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <optional>
@@ -5,6 +7,7 @@
 #include "models/dupire/dupire.hpp"
 #include "models/heston/heston.hpp"
 #include "models/model.hpp"
+#include "surface/local_vol.hpp"
 
 namespace py = pybind11; 
 
@@ -30,12 +33,13 @@ void bind_models(py::module_& m) {
 
         .def("_feller_condition", &Heston::feller_condition);
 
-    /*
+    
     py::class_<Dupire>(m, "_Dupire")
-        .def(py::init<float, float,  >(),
-            py::arg("mu"),
-            py::arg("sigma"));
-*/
+        .def(py::init<float, float, std::shared_ptr<LocalVolatilitySurface>>(),
+            py::arg("r"),
+            py::arg("q"),
+            py::arg("loc_vol_surface")
+        );
 }
 
 } // namespace qe::pybind
