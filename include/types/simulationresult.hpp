@@ -25,9 +25,11 @@ struct SimulationResult {
      * @param seed The seed used to generate the path 
      * @param n_steps The number of steps of the generation 
      * @param n_paths the nuùber of paths of the generation
+     * @param T the time on which the simulation runs
+     * @param v_paths optional volatiltiy paths
      */
     SimulationResult(std::shared_ptr<std::vector<double>> paths, size_t seed,
-                    size_t n_steps, size_t n_paths, std::optional<std::shared_ptr<std::vector<double>>> v_paths = std::nullopt);
+                    size_t n_steps, size_t n_paths, double T, std::optional<std::shared_ptr<std::vector<double>>> v_paths = std::nullopt);
     size_t get_npaths() const {return n_paths_;}
     size_t get_seed() const {return origin_seed_;}
     size_t get_nsteps() const {return n_steps_;}
@@ -54,6 +56,16 @@ struct SimulationResult {
     return *vols_;
     }
 
+    /**
+     * @brief Returns the spot values in all path at time i. 
+     * 
+     * @param i the 
+     * @return std::vector<double> 
+     * @note : if time t does not correspond to an exact discretization time,
+     * the returned spot value will be the one right after t. 
+     */
+    std::vector<double> get_spot_at(size_t t);
+
 
     private :
         std::shared_ptr<std::vector<double>> paths_;
@@ -61,6 +73,7 @@ struct SimulationResult {
         const size_t origin_seed_;
         const size_t n_paths_;
         const size_t n_steps_;
+        const double T_;
 
 
 };

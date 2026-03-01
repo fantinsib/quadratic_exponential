@@ -176,4 +176,3 @@ class BarrierPayoff : public Payoff {
             return false;
         };
 };
-

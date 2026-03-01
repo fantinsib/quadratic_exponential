@@ -16,15 +16,15 @@ TEST_CASE("SimulationResult - Basic usage"){
                                    100, 99, 98, 97};
 
     SECTION("Constructor") {
-        SimulationResult res(std::make_shared<std::vector<double>>(my_path),  1, 3, 2);
+        SimulationResult res(std::make_shared<std::vector<double>>(my_path),  1, 3, 2, 1);
     }
 
     SECTION("Dimension errors") {
-        REQUIRE_THROWS_AS(SimulationResult(std::make_shared<std::vector<double>>(my_path),  1, 2, 2), std::invalid_argument);
+        REQUIRE_THROWS_AS(SimulationResult(std::make_shared<std::vector<double>>(my_path),  1, 2, 2, 1), std::invalid_argument);
     }
 
     SECTION("Access to data") {
-        SimulationResult res( std::make_shared<std::vector<double>>(my_path),  1, 3, 2);
+        SimulationResult res( std::make_shared<std::vector<double>>(my_path),  1, 3, 2,1);
         const std::vector<double>& paths = res.get_paths();
 
     }
@@ -38,7 +38,7 @@ TEST_CASE("SimulationResult - Average terminal value") {
                                    100, 99, 98, 103,
                                 100, 99, 101, 103};
 
-    SimulationResult res(std::make_shared<std::vector<double>>(my_path), 1, 3, 3);
+    SimulationResult res(std::make_shared<std::vector<double>>(my_path), 1, 3, 3,1);
 
     REQUIRE(res.avg_terminal_value() == 103.0);
 
@@ -51,8 +51,16 @@ TEST_CASE("SimulationResult - Error accessing vol") {
                                    100, 99, 98, 103,
                                 100, 99, 101, 103};
 
-    SimulationResult res(std::make_shared<std::vector<double>>(my_path), 1, 3, 3);
+    SimulationResult res(std::make_shared<std::vector<double>>(my_path), 1, 3, 3,1);
 
     REQUIRE_THROWS_AS(res.get_vol(), std::invalid_argument);
+
+}
+
+TEST_CASE("SimulationResult - Error on T") {
+        std::vector<double> my_path{100, 101, 102, 103,
+                                   100, 99, 98, 103,
+                                100, 99, 101, 103};
+        REQUIRE_THROWS_AS(SimulationResult(std::make_shared<std::vector<double>>(my_path), 1, 3, 3,-1), std::invalid_argument);
 
 }

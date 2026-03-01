@@ -102,8 +102,8 @@ SimulationResult MonteCarlo::generate_spot(float S0,
     }
     if (eptr) std::rethrow_exception(eptr);
 
-    if (return_volatility_) return SimulationResult(std::make_shared<std::vector<double>>(s_all_paths), seed_,  n, n_paths, std::make_shared<std::vector<double>>(v_all_paths)); 
-    else return SimulationResult(std::make_shared<std::vector<double>>(s_all_paths), seed_,  n, n_paths); 
+    if (return_volatility_) return SimulationResult(std::make_shared<std::vector<double>>(s_all_paths), seed_,  n, n_paths, T, std::make_shared<std::vector<double>>(v_all_paths)); 
+    else return SimulationResult(std::make_shared<std::vector<double>>(s_all_paths), seed_,  n, n_paths, T); 
 
 }
 
