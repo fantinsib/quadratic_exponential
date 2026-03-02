@@ -38,4 +38,13 @@ double SimulationResult::avg_terminal_value(){
 
 std::vector<double> SimulationResult::get_spot_at(size_t t){
 
+    if (t > n_steps_) throw std::invalid_argument("SimulationResult::get_spot_at : t cannot be larger than the number of steps");
+    std::vector<double> spots_at_t(n_paths_);
+    
+    for (size_t i = 0; i < n_paths_; i++){
+
+        spots_at_t[i] = (*paths_)[i*n_steps_ + t + i];
+    }
+    return spots_at_t;
+
 }
