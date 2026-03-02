@@ -8,6 +8,13 @@
 
 class Extractor {
     public:
+
+        /**
+         * @brief Util to extract data from a simulation result
+         * for payoff calculations 
+         * 
+         * @param res 
+         */
         Extractor(std::shared_ptr<SimulationResult> res);
 
         /**
@@ -23,7 +30,7 @@ class Extractor {
          * 
          * @return std::vector<size_t> 
          */
-        std::vector<size_t> tf_to_index() const; 
+        std::vector<size_t> tf_to_index(std::vector<double> Ts) const; 
 
     private:
         std::shared_ptr<SimulationResult> res_;

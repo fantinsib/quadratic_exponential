@@ -8,10 +8,10 @@
 
 class ObservationSchedule {
     public:
-        ObservationSchedule(std::vector<size_t>& time_index) : time_index(std::move(time_index)) 
+        ObservationSchedule(std::vector<double>& Ts) : Ts(std::move(Ts)) 
         {
-            n_obs = time_index.size();
+            n_obs = Ts.size();
         };
-        std::vector<size_t> time_index;
+        std::vector<double> Ts;
         size_t n_obs;
 };

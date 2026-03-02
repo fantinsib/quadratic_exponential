@@ -24,6 +24,7 @@ add_library(volmc
     src/surface/local_vol.cpp
     src/instruments/instrument.cpp
     src/pricing/pricer.cpp
+    src/payoff/extractor.cpp
 )
 
 target_include_directories(volmc
@@ -64,6 +65,7 @@ add_executable(volmc_tests
     tests/test_cpp/test_surface/test_local_vol.cpp
     tests/test_cpp/test_options/test_pricer.cpp
     tests/test_cpp/test_options/test_barrier.cpp
+    tests/test_cpp/test_options/test_payoff.cpp
     
 )
 
