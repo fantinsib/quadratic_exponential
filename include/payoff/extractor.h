@@ -23,7 +23,7 @@ class Extractor {
          * @param schedule an ObservationSchedule containing the dates of observation
          * @return std::vector<double> 
          */
-        std::vector<double> get(ObservationSchedule& schedule) const;
+        std::vector<std::vector<double>> get(ObservationSchedule& schedule) const;
         
         /**
          * @brief Converts the date from the observation schedule to index 

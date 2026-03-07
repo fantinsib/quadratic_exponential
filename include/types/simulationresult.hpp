@@ -58,9 +58,9 @@ struct SimulationResult {
     }
 
     /**
-     * @brief Returns the spot values in all path at time i. 
+     * @brief Returns the spot values in all path at step t. 
      * 
-     * @param i the 
+     * @param t the step to observe
      * @return std::vector<double> 
      * @note : if time t does not correspond to an exact discretization time,
      * the returned spot value will be the one right after t. 

@@ -27,18 +27,21 @@ Extractor::Extractor(std::shared_ptr<SimulationResult> res) :
 }
 
 
-std::vector<double> Extractor::get(ObservationSchedule& schedule) const {
+std::vector<std::vector<double>> Extractor::get(ObservationSchedule& schedule) const {
 
-    size_t n_spots = schedule.n_obs;
+    size_t n_spots = schedule.get_n_obs();
+    std::vector<double> Ts = schedule.get_Ts();
 
-    std::vector<size_t> idx = tf_to_index(schedule.Ts);
+    std::vector<size_t> idx = tf_to_index(Ts);
+    std::vector<std::vector<double>> spots(n_spots);
     
     for (size_t i = 0; i < n_spots; i++) {
-        
+        spots[i] = res_->get_spot_at(i);
         
 
     };
 
+    return spots;
 }
 
 std::vector<size_t> Extractor::tf_to_index(std::vector<double> Ts) const {
